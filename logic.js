@@ -13,8 +13,9 @@ var config = {
     storageBucket: "privet-83a48.appspot.com",
     messagingSenderId: "864513816118"
   };
-  firebase.initializeApp(config);
+firebase.initializeApp(config);
 
+var database = firebase.database()
 
 // Initial Values
 var initialBid = 0;
@@ -32,8 +33,12 @@ database.ref().on("value", function(snapshot) {
   if (snapshot.child("highBidder").exists() && snapshot.child("highPrice").exists()) {
 
     // Set the variables for highBidder/highPrice equal to the stored values in firebase.
+
      highPrice = snapshot.child("highPrice");
      highBidder = snapshot.chil("highBidder");
+
+ 
+
 
 
     // Change the HTML to reflect the stored values
@@ -71,8 +76,8 @@ $("#submit-bid").on("click", function(event) {
   event.preventDefault();
 
   // Get the input values
-
-
+  let name = $("#bidder-name").val()
+  let price = $('#bidder-price').val()
   // Log the Bidder and Price (Even if not the highest)
   if (bidderPrice > highPrice) {
 
@@ -80,16 +85,21 @@ $("#submit-bid").on("click", function(event) {
     alert("You are now the highest bidder.");
 
     // Save the new price in Firebase
-
+    database.ref().set({
+        highBidder: name,
+        highPrice: price
+    })
 
     // Log the new High Price
-
+    console.log(price)
 
     // Store the new high price and bidder name as a local variable
-
+    highPrice = price;
+    highBidder = name;
 
     // Change the HTML to reflect the new high price and bidder
-
+    $('#highest-bidder').val(highBidder);
+    $('#highest-price').val(highPrice);
   }
 
   else {
